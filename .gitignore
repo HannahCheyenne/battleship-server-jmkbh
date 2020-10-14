@@ -4,3 +4,4 @@ node_modules
 .history
 .vscode
 .eslintrc.js
+.eslintrc.json
