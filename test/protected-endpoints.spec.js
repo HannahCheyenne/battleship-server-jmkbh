@@ -20,7 +20,7 @@ describe.only('Protected Endpoints', function () {
   afterEach('cleanup', () => helpers.cleanTables(db))
 
   beforeEach('insert users and game stats', () => {
-    return helpers.seedUsersLanguagesWords(
+    return helpers.seedStats(
       db,
       testUsers,
       testStats,
