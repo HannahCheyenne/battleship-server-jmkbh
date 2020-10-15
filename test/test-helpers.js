@@ -34,6 +34,28 @@ function makeUsersArray() {
   ]
 }
 
+/**
+ * create a knex instance connected to postgres
+ * @returns {array} of stats
+ */
+function makeStatsArray(user) {
+  return [
+    {
+      id: 1,
+      game_wins: 3,
+      game_losses: 1,
+      games_played: 4,
+      shots_hit: 18,
+      shots_missed: 3,
+      carrier_destroyed: 4,
+      battleship_destroyed: 3,
+      destroyer_destroyed: 4,
+      submarine_destroyed: 3,
+      patrolboat_destroyed: 3,
+    }
+  ]
+}
+
 
 
 
@@ -61,11 +83,15 @@ function makeAuthHeader(user, secret = process.env.JWT_SECRET) {
 function cleanTables(db) {
     return db.transaction(trx =>
       trx.raw(
-        `TRUNCATE "user"`
+        `TRUNCATE 
+        "game_stats",
+        "user"`
         )
         .then(() =>
           Promise.all([
+            trx.raw(`ALTER SEQUENCE game_stats_id_seq minvalue 0 START WITH 1`),
             trx.raw(`ALTER SEQUENCE user_id_seq minvalue 0 START WITH 1`),
+            trx.raw(`SELECT setval('game_stats_id_seq', 0)`),
             trx.raw(`SELECT setval('user_id_seq', 0)`),
           ])
         )
@@ -95,10 +121,34 @@ function seedUsers(db, users) {
 }
 
 
+/**
+ * insert stats into db and update sequence
+ * @param {knex instance} db
+ * @param {array} stats - array of stats objects for insertion
+ * @returns {Promise} - when stats table seeded
+ */
+async function seedStats(db, users, stats) {
+  await seedUsers(db, users)
+
+  await db.transaction(async trx => {
+    await trx.into('game_stats').insert(stats)
+
+    await Promise.all([
+      trx.raw(
+        `SELECT setval('language_id_seq', ?)`,
+        [stats[stats.length - 1].id],
+      ),
+    ])
+  })
+}
+
+
 module.exports = {
     makeKnexInstance,
     makeUsersArray,
+    makeStatsArray,
     cleanTables,
     seedUsers,
+    seedStats,
     makeAuthHeader
 }
