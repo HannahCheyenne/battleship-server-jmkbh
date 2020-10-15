@@ -10,6 +10,6 @@ CREATE TABLE "game_stats" (
     "destroyer_destroyed" SMALLINT DEFAULT 0,
     "submarine_destroyed" SMALLINT DEFAULT 0,
     "patrolboat_destroyed" SMALLINT DEFAULT 0,
-    "user_id" INTEGER REFERENCES "users"(id)
+    "user_id" INTEGER REFERENCES "user"(id)
         ON DELETE CASCADE NOT NULL
 );
