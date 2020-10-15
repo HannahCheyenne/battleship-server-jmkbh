@@ -52,7 +52,8 @@ function makeStatsArray(user) {
       destroyer_destroyed: 4,
       submarine_destroyed: 3,
       patrolboat_destroyed: 3,
-    }
+      user_id: user.id,
+    },
   ]
 }
 
@@ -66,36 +67,36 @@ function makeStatsArray(user) {
  * @returns {string} - for HTTP authorization header
  */
 function makeAuthHeader(user, secret = process.env.JWT_SECRET) {
-    const token = jwt.sign({ user_id: user.id }, secret, {
-      subject: user.username,
-      algorithm: 'HS256',
-    })
-    return `Bearer ${token}`
+  const token = jwt.sign({ user_id: user.id }, secret, {
+    subject: user.username,
+    algorithm: 'HS256',
+  })
+  return `Bearer ${token}`
 }
 
 
 
-  /**
- * remove data from tables and reset sequences for SERIAL id fields
- * @param {knex instance} db
- * @returns {Promise} - when tables are cleared
- */
+/**
+* remove data from tables and reset sequences for SERIAL id fields
+* @param {knex instance} db
+* @returns {Promise} - when tables are cleared
+*/
 function cleanTables(db) {
-    return db.transaction(trx =>
-      trx.raw(
-        `TRUNCATE 
+  return db.transaction(trx =>
+    trx.raw(
+      `TRUNCATE 
         "game_stats",
         "user"`
-        )
-        .then(() =>
-          Promise.all([
-            trx.raw(`ALTER SEQUENCE game_stats_id_seq minvalue 0 START WITH 1`),
-            trx.raw(`ALTER SEQUENCE user_id_seq minvalue 0 START WITH 1`),
-            trx.raw(`SELECT setval('game_stats_id_seq', 0)`),
-            trx.raw(`SELECT setval('user_id_seq', 0)`),
-          ])
-        )
     )
+      .then(() =>
+        Promise.all([
+          trx.raw(`ALTER SEQUENCE game_stats_id_seq minvalue 0 START WITH 1`),
+          trx.raw(`ALTER SEQUENCE user_id_seq minvalue 0 START WITH 1`),
+          trx.raw(`SELECT setval('game_stats_id_seq', 0)`),
+          trx.raw(`SELECT setval('user_id_seq', 0)`),
+        ])
+      )
+  )
 }
 
 
@@ -106,24 +107,26 @@ function cleanTables(db) {
  * @returns {Promise} - when users table seeded
  */
 function seedUsers(db, users) {
-    const preppedUsers = users.map(user => ({
-      ...user,
-      password: bcrypt.hashSync(user.password, 1)
-    }))
-    return db.transaction(async trx => {
-      await trx.into('user').insert(preppedUsers)
+  const preppedUsers = users.map(user => ({
+    ...user,
+    password: bcrypt.hashSync(user.password, 1)
+  }))
   
-      await trx.raw(
-        `SELECT setval('user_id_seq', ?)`,
-        [users[users.length - 1].id],
-      )
-    })
+  return db.transaction(async trx => {
+    await trx.into('user').insert(preppedUsers)
+
+    await trx.raw(
+      `SELECT setval('user_id_seq', ?)`,
+      [users[users.length - 1].id],
+    )
+  })
 }
 
 
 /**
  * insert stats into db and update sequence
  * @param {knex instance} db
+ * @param {array} users - array of user objects for insertion
  * @param {array} stats - array of stats objects for insertion
  * @returns {Promise} - when stats table seeded
  */
@@ -135,7 +138,7 @@ async function seedStats(db, users, stats) {
 
     await Promise.all([
       trx.raw(
-        `SELECT setval('language_id_seq', ?)`,
+        `SELECT setval('game_stats_id_seq', ?)`,
         [stats[stats.length - 1].id],
       ),
     ])
@@ -144,11 +147,11 @@ async function seedStats(db, users, stats) {
 
 
 module.exports = {
-    makeKnexInstance,
-    makeUsersArray,
-    makeStatsArray,
-    cleanTables,
-    seedUsers,
-    seedStats,
-    makeAuthHeader
+  makeKnexInstance,
+  makeUsersArray,
+  makeStatsArray,
+  cleanTables,
+  seedUsers,
+  seedStats,
+  makeAuthHeader
 }

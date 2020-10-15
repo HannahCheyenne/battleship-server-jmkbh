@@ -1,12 +1,12 @@
 const app = require('../src/app')
 const helpers = require('./test-helpers')
 
-describe.only('Protected Endpoints', function () {
+describe('Protected Endpoints', function () {
   let db
 
   const testUsers = helpers.makeUsersArray()
   const [testUser] = testUsers
-  const [testStats] = helpers.makeStatsArray(testUser)
+  const testStats = helpers.makeStatsArray(testUser)
 
   before('make knex instance', () => {
     db = helpers.makeKnexInstance()
@@ -30,14 +30,14 @@ describe.only('Protected Endpoints', function () {
   const protectedEndpoints = [
     {
       name: 'GET /api/stats',
-      path: '/api/language',
+      path: '/api/stats',
       method: supertest(app).get,
     },
-    {
-      name: 'PUT /api/auth/token',
-      path: '/api/auth/token',
-      method: supertest(app).put,
-    },
+    // {
+    //   name: 'PUT /api/auth/token',
+    //   path: '/api/auth/token',
+    //   method: supertest(app).put,
+    // },
   ]
 
   protectedEndpoints.forEach(endpoint => {

@@ -7,14 +7,20 @@ const gameStatsRouter = express.Router()
 const jsonBodyParser = express.json()
 
 gameStatsRouter
-    .route('/')
-    .get((req, res, next) => {
-        GameStatsService.getUsersStats(req.app.get('db'))
-        .then(stats => {
-          // console.log(affirmations)
-          res.json(stats.map())
-        })
-        .catch(next)
-    })
+  .route('/')
+  .get(requireAuth, async (req, res, next) => {
+    try {
+      const stats = await GameStatsService.getUsersStats(
+        req.app.get('db'),
+        req.user.id,
+      )
+      res.json({
+        stats
+      })
+      next()
+    } catch (error) {
+      next(error)
+    }
+  })
 
 module.exports = gameStatsRouter
