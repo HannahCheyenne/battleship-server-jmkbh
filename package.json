@@ -10,10 +10,12 @@
     "migrate:test": "NODE_ENV=test npm run migrate",
     "migrate:production": "heroku run npm run migrate",
     "start": "node src/server.js",
-    "predeploy": "npm audit",
-    "deploy": "git push heroku master"
+    "predeploy": "npm audit"
   },
   "keywords": [],
+  "engines": {
+    "node": "12.18.2"
+  },
   "author": "",
   "license": "ISC",
   "dependencies": {
