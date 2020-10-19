@@ -19,14 +19,13 @@ const GameStatsService = {
         .where('game_stats.user_id', user_id)
         .first();
     },
-    updateWords(db, data) {
-      const { newWins, newLosses, newPlayed, newHit, newMissed, newCarrier, newBattleship, newDestroyer, newSubmarine, newPatrolboat, user_id } = data
+    updateGameStats(db, data) {
       return db('game_stats')
         .where({ user_id: data.user_id })
         .update({
-          game_wins: data.memory_value,
-          game_losses: data.correct_count,
-          games_played: data.incorrect_count,
+          game_wins: data.game_wins,
+          game_losses: data.game_losses,
+          games_played: data.games_played,
           shots_hit: data.shots_hit,
           shots_missed: data.shots_missed,
           carrier_destroyed: data.carrier_destroyed,

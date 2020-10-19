@@ -41,6 +41,16 @@ const UserService = {
             username: user.username,
         };
     },
+    populateGameStats(db, user_id) {
+        return db.transaction(async trx => {
+            const [gameStatsId] = await trx
+                .into('game_stats')
+                .insert(
+                    [{ user_id }],
+                    ['id']
+                )
+        })
+    },
 
     //function for populating user stats
 };

@@ -6,7 +6,7 @@
 //         'p1_board',
 //         'p2_board',
 //         'p1_health',
-//         'p1_health',
+//         'p2_health',
 //         'player_turn',
 //         'active_game',
 //       )

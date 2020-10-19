@@ -43,6 +43,10 @@ userRouter
             )
 
             //function for populating user stats goes here
+            await UserService.populateGameStats(
+                req.app.get('db'),
+                user.id
+            )
 
             res
                 .status(201)
