@@ -9,6 +9,7 @@ const userRouter = require('./user/user-router');
 const gameStatsRouter = require('./gamestats/gamestats-router');
 const gameRouter = require('./game/game-router');
 
+
 const app = express();
 
 const morganOption = (NODE_ENV === 'production')
@@ -27,6 +28,7 @@ app.use('/api/auth', authRouter);
 app.use('/api/user', userRouter);
 app.use('/api/stats', gameStatsRouter);
 app.use('/api/game', gameRouter);
+
 
 app.use(function errorHandler(error, req, res, next) {
     let response;

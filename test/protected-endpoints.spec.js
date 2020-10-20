@@ -1,3 +1,4 @@
+const supertest = require('supertest')
 const app = require('../src/app')
 const helpers = require('./test-helpers')
 
@@ -33,11 +34,16 @@ describe('Protected Endpoints', function () {
       path: '/api/stats',
       method: supertest(app).get,
     },
-    // {
-    //   name: 'PUT /api/auth/token',
-    //   path: '/api/auth/token',
-    //   method: supertest(app).put,
-    // },
+    {
+      name: 'PUT /api/auth/token',
+      path: '/api/auth/token',
+      method: supertest(app).put,
+    },
+    {
+      name: 'POST /api/stats',
+      path: '/api/stats',
+      method: supertest(app).post
+    }
   ]
 
   protectedEndpoints.forEach(endpoint => {
