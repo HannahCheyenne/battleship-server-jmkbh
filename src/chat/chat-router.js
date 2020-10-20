@@ -12,8 +12,5 @@ chatRouter
     })
 
 
-let interval
-
-
 
 module.exports = chatRouter
