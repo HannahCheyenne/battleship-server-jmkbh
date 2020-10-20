@@ -11,13 +11,14 @@ const gameRouter = require('./game/game-router');
 const app = express();
 
 //chat features
+const router = require('./router');
+
 const http = require('http');
 const socketio = require('socket.io');
 const { addUser,
     removeUser,
     getUser,
     getUsersInRoom } = require('./user/users');
-const router = express.Router();
 const server = http.createServer(app);
 const io = socketio(server);
 app.use(router);
@@ -36,9 +37,11 @@ app.get('/', (req, res) => {
     res.send('Hello, world!');
 });
 
-router.get('/chat', (req, res) => {
-    res.redirect('https://http://localhost:3000/');
-});
+// router.get('/chat', (req, res) => {
+//     res
+//         //.send('Reached Chat')
+//         .redirect('https://http://localhost:4000/');
+// });
 
 app.use('/api/auth', authRouter);
 app.use('/api/user', userRouter);
