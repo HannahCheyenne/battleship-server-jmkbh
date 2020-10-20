@@ -32,7 +32,7 @@ const GameStatsService = {
           battleship_destroyed: data.battleship_destroyed,
           destroyer_destroyed: data.destroyer_destroyed,
           submarine_destroyed: data.submarine_destroyed,
-          partolboat_destroyed: data.partolboat_destroyed
+          patrolboat_destroyed: data.patrolboat_destroyed
         });
     },
   };
