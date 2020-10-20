@@ -1,6 +1,6 @@
 const knex = require('knex');
-const app = require('./app');
-const { PORT, DATABASE_URL } = require('./config');
+const { app, server } = require('./app');
+const { HTTP_PORT, WS_PORT, DATABASE_URL } = require('./config');
 
 
 const db = knex({
@@ -10,6 +10,10 @@ const db = knex({
 
 app.set('db', db);
 
-app.listen(PORT, () => {
-    console.log(`Server listening at http://localhost:${PORT}`)
+app.listen(HTTP_PORT, () => {
+    console.log(`Server listening at http://localhost:${HTTP_PORT}`);
+});
+
+server.listen(WS_PORT, () => {
+    console.log(`Chat started at http://localhost:${WS_PORT}`);
 });
