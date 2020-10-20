@@ -1,9 +1,9 @@
 const path = require("path");
 const express = require("express");
 
-const GameService = require("./game-service");
+const Game = require("./game-service");
 const { requireAuth } = require("../middleware/jwt-auth");
-const { postGameState } = require("./game-service");
+const { postGameState, initializeGame } = require("./game-service");
 const gameRouter = express.Router();
 const jsonBodyParser = express.json();
 
@@ -11,7 +11,7 @@ gameRouter
   .route("/:id")
   .get(jsonBodyParser, async (req, res, next) => {
     try {
-      const gameState = await GameService.getGameState(
+      const gameState = await Game.getGameState(
         req.app.get("db"),
         req.params.id
       );
@@ -23,23 +23,21 @@ gameRouter
       next(error);
     }
   })
-  .post(jsonBodyParser, async (req, res, next) => {
+  .patch(jsonBodyParser, async (req, res, next) => {
     try {
-      const gameState = await GameService.getGameState(
+      const gameState = await Game.getGameState(
         req.app.get("db"),
         req.params.id
       );
       const { x, y } = req.body;
 
-      console.log("y", y);
-      console.log("x", x);
-      console.log("gameState", gameState[0].p1_board);
+      //do magic here
 
-      gameState[0].p1_board[y][x] = 8;
+      //validateMove(gameBoard, x,y)
+      const newBoard = Game.checkHit(x,y)
+      
 
-      //replace this with magic later
-      GameService.postGameState(req.app.get("db"), gameState);
-
+      await Game.postGameState(req.app.get("db"), gameState[0]);
       res.json({
         gameState,
       });
@@ -48,5 +46,22 @@ gameRouter
       next(error);
     }
   });
+
+gameRouter.route("/newgame").post(jsonBodyParser, async (req, res, next) => {
+  try {
+    const playerBoard = req.body.game_board;
+
+    const gameState = await Game.initializeGame(playerBoard);
+
+    //do more magic here
+
+    res.json({
+      gameState,
+    });
+    next();
+  } catch (error) {
+    next(error);
+  }
+});
 
 module.exports = gameRouter;
