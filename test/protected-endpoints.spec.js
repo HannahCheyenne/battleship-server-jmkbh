@@ -44,11 +44,6 @@ describe.only('Protected Endpoints', function () {
       path: '/api/stats',
       method: supertest(app).post
     },
-    {
-      name: 'GET /api/stats',
-      path: '/api/stats',
-      method: supertest(app).get
-    }
   ]
 
   protectedEndpoints.forEach(endpoint => {
