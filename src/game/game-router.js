@@ -31,11 +31,17 @@ gameRouter
       );
       const { x, y } = req.body;
 
+      console.log("gameState", gameState);
       //do magic here
 
       //validateMove(gameBoard, x,y)
-      const newBoard = Game.checkHit(x,y)
-      
+      //const newBoard = Game.checkHit(x,y)
+
+      if (gameState[0].p1_board[x][y] > 1) {
+        gameState[0].p1_board[x][y] = 8;
+      } else {
+        gameState[0].p1_board[x][y] = 0;
+      }
 
       await Game.postGameState(req.app.get("db"), gameState[0]);
       res.json({

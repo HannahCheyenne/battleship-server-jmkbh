@@ -30,9 +30,9 @@ const GameService = {
 
     if (cell > 1) {
       //TODO - update ship health
-      gameBoard[y][x] = 8;
+      gameBoard[x][y] = 8;
     } else {
-      gameBoard[y][x] = 0;
+      gameBoard[x][y] = 0;
     }
 
     return gameBoard;
