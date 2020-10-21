@@ -2,7 +2,7 @@ const supertest = require('supertest')
 const app = require('../src/app')
 const helpers = require('./test-helpers')
 
-describe('Protected Endpoints', function () {
+describe.only('Protected Endpoints', function () {
   let db
 
   const testUsers = helpers.makeUsersArray()
@@ -43,6 +43,11 @@ describe('Protected Endpoints', function () {
       name: 'POST /api/stats',
       path: '/api/stats',
       method: supertest(app).post
+    },
+    {
+      name: 'GET /api/stats',
+      path: '/api/stats',
+      method: supertest(app).get
     }
   ]
 
