@@ -100,11 +100,7 @@ describe.only('Game Stats Endpoints', function () {
   /**
    * @description Submit a new guess for the language
    **/
-  describe.skip(`POST /api/stats`, () => {
-    const [usersStats] = testStats.filter(
-        stats => stats.user_id === testUser.id
-      )
-
+  describe(`POST /api/stats`, () => {
     beforeEach('insert users and stats', () => {
       return helpers.seedUsersStats(
         db,
@@ -113,15 +109,47 @@ describe.only('Game Stats Endpoints', function () {
       )
     })
 
-    context.skip(`Given shot misses`, () => {
+    const requiredFields = [
+        'game_wins', 
+        'game_losses', 
+        'games_played', 
+        'shots_hit', 
+        'shots_missed',
+        'carrier_destroyed',
+        'battleship_destroyed',
+        'destroyer_destroyed',
+        'submarine_destroyed',
+        'patrolboat_destroyed', 
+        'user_id'
+    ]
 
+    requiredFields.forEach(field => {
+      const updatedStats = {
+        game_wins: 3,
+        game_losses: 5,
+        games_played: 10,
+        shots_hit: 50,
+        shots_missed: 24,
+        carrier_destroyed: 10,
+        battleship_destroyed: 8,
+        destroyer_destroyed: 1,
+        submarine_destroyed: 4,
+        patrolboat_destroyed: 3,
+        user_id: testUser.id
+      }
 
+      it(`responds with 400 and an error message when the '${field}' is missing`, () => {
+        delete updatedStats[field]
+
+        return supertest(app)
+          .post('/api/stats')
+          .set('Authorization', helpers.makeAuthHeader(testUser))
+          .send(updatedStats)
+          .expect(400, {
+            error: `Missing '${field}' in request body`,
+          })
+      })
     })
 
-    context.skip(`Given shot hits`, () => {
-
-
-
-    })
   })
 })

@@ -51,9 +51,39 @@ gameStatsRouter
         req.user.id,
       )
 
+      //if no user stats
       if (!stats) {
         return res.status(404).json({
           error: 'You don\'t have any stats',
+        })
+      }
+
+      const requiredFields = [
+        'game_wins',
+        'game_losses',
+        'games_played',
+        'shots_hit',
+        'shots_missed',
+        'carrier_destroyed',
+        'battleship_destroyed',
+        'destroyer_destroyed',
+        'submarine_destroyed',
+        'patrolboat_destroyed',
+        'user_id'
+      ]
+
+      //instantiate empty array for missing fields
+      const missingFields = []
+      //loop thru requiredFields and check for field in the updatedData that we are sending
+      requiredFields.forEach(field => {
+        if(!(field in updatedData)){
+          missingFields.push(field)
+        }
+      })
+      //sends error only once instead of at the error and at the end
+      if(missingFields.length) {
+        return res.status(400).json({
+          error: `Missing '${missingFields.join(', ')}' in request body`,
         })
       }
 
@@ -83,7 +113,7 @@ gameStatsRouter
         battleship_destroyed: stats.battleship_destroyed,
         destroyer_destroyed: stats.destroyer_destroyed,
         submarine_destroyed: stats.submarine_destroyed,
-        partolboat_destroyed: stats.partolboat_destroyed
+        patrolboat_destroyed: stats.patrolboat_destroyed
       }
 
       return res.status(200).json(responseForUser)
