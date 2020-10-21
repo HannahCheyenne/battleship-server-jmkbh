@@ -2,7 +2,7 @@ const supertest = require('supertest')
 const app = require('../src/app')
 const helpers = require('./test-helpers')
 
-describe.only('Protected Endpoints', function () {
+describe('Protected Endpoints', function () {
   let db
 
   const testUsers = helpers.makeUsersArray()
