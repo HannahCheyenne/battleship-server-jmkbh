@@ -9,12 +9,14 @@ const jsonBodyParser = express.json();
 
 gameRouter
   .route("/:id")
+
   .get(jsonBodyParser, async (req, res, next) => {
     try {
-      const gameState = await Game.getGameState(
+      const rawState = await Game.getGameState(
         req.app.get("db"),
         req.params.id
       );
+      gameState = rawState[0];
       res.json({
         gameState,
       });
@@ -23,27 +25,20 @@ gameRouter
       next(error);
     }
   })
+
   .patch(jsonBodyParser, async (req, res, next) => {
     try {
-      const gameState = await Game.getGameState(
+      const rawState = await Game.getGameState(
         req.app.get("db"),
         req.params.id
       );
+      let gameState = rawState[0];
       const { x, y } = req.body;
-
-      console.log("gameState", gameState);
-      //do magic here
-
-      //validateMove(gameBoard, x,y)
-      //const newBoard = Game.checkHit(x,y)
-
-      if (gameState[0].p2_board[x][y] > 1) {
-        gameState[0].p2_board[x][y] = 8;
-      } else {
-        gameState[0].p2_board[x][y] = 0;
-      }
-
-      await Game.postGameState(req.app.get("db"), gameState[0]);
+      //!validateMove(gameBoard, x,y)
+      gameState = Game.checkHit(gameState, x, y);
+      console.log("newState", gameState);
+      //!changePlayer
+      await Game.postGameState(req.app.get("db"), gameState);
       res.json({
         gameState,
       });
@@ -55,12 +50,12 @@ gameRouter
 
 gameRouter.route("/newgame").post(jsonBodyParser, async (req, res, next) => {
   try {
-    const playerBoard = req.body.game_board;
-
-    const gameState = await Game.initializeGame(playerBoard);
-
-    //do more magic here
-
+    const newGame = req.body;
+    console.log("req.body", req.body)
+    const id = await Game.initializeGame(req.app.get("db"), newGame);
+    console.log("id", id)
+    const rawState = await Game.getGameState(req.app.get("db"), id[0])
+    const gameState = rawState[0];
     res.json({
       gameState,
     });
