@@ -171,16 +171,16 @@ export default class sandbox extends Component {
       horizontal = Math.random() < 0.5;
 
       if (!horizontal) {
-        if (board[player][y][x] === 1 && board[player][y - 1][x] === 1) {
-          board[player][y][x] = 2;
-          board[player][y - 1][x] = 2;
+        if (board[y][x] === 1 && board[y - 1][x] === 1) {
+          board[y][x] = 2;
+          board[y - 1][x] = 2;
           this.setState({ board: board });
           validMove = true;
         }
       } else {
-        if (board[player][y][x] === 1 && board[player][y][x - 1] === 1) {
-          board[player][y][x] = 2;
-          board[player][y][x - 1] = 2;
+        if (board[y][x] === 1 && board[y][x - 1] === 1) {
+          board[y][x] = 2;
+          board[y][x - 1] = 2;
           this.setState({ board: board });
           validMove = true;
         }
@@ -204,25 +204,25 @@ export default class sandbox extends Component {
 
       if (!horizontal) {
         if (
-          board[player][y][x] === 1 &&
-          board[player][y - 1][x] === 1 &&
-          board[player][y - 2][x] === 1
+          board[y][x] === 1 &&
+          board[y - 1][x] === 1 &&
+          board[y - 2][x] === 1
         ) {
-          board[player][y][x] = 3;
-          board[player][y - 1][x] = 3;
-          board[player][y - 2][x] = 3;
+          board[y][x] = 3;
+          board[y - 1][x] = 3;
+          board[y - 2][x] = 3;
           this.setState({ board: board });
           validMove = true;
         }
       } else {
         if (
-          board[player][y][x] === 1 &&
-          board[player][y][x - 1] === 1 &&
-          board[player][y][x - 2] === 1
+          board[y][x] === 1 &&
+          board[y][x - 1] === 1 &&
+          board[y][x - 2] === 1
         ) {
-          board[player][y][x] = 3;
-          board[player][y][x - 1] = 3;
-          board[player][y][x - 2] = 3;
+          board[y][x] = 3;
+          board[y][x - 1] = 3;
+          board[y][x - 2] = 3;
           this.setState({ board: board });
           validMove = true;
         }
@@ -246,25 +246,25 @@ export default class sandbox extends Component {
 
       if (!horizontal) {
         if (
-          board[player][y][x] === 1 &&
-          board[player][y - 1][x] === 1 &&
-          board[player][y - 2][x] === 1
+          board[y][x] === 1 &&
+          board[y - 1][x] === 1 &&
+          board[y - 2][x] === 1
         ) {
-          board[player][y][x] = 7;
-          board[player][y - 1][x] = 7;
-          board[player][y - 2][x] = 7;
+          board[y][x] = 7;
+          board[y - 1][x] = 7;
+          board[y - 2][x] = 7;
           this.setState({ board: board });
           validMove = true;
         }
       } else {
         if (
-          board[player][y][x] === 1 &&
-          board[player][y][x - 1] === 1 &&
-          board[player][y][x - 2] === 1
+          board[y][x] === 1 &&
+          board[y][x - 1] === 1 &&
+          board[y][x - 2] === 1
         ) {
-          board[player][y][x] = 7;
-          board[player][y][x - 1] = 7;
-          board[player][y][x - 2] = 7;
+          board[y][x] = 7;
+          board[y][x - 1] = 7;
+          board[y][x - 2] = 7;
           this.setState({ board: board });
           validMove = true;
         }
@@ -288,29 +288,29 @@ export default class sandbox extends Component {
 
       if (!horizontal) {
         if (
-          board[player][y][x] === 1 &&
-          board[player][y - 1][x] === 1 &&
-          board[player][y - 2][x] === 1 &&
-          board[player][y - 3][x] === 1
+          board[y][x] === 1 &&
+          board[y - 1][x] === 1 &&
+          board[y - 2][x] === 1 &&
+          board[y - 3][x] === 1
         ) {
-          board[player][y][x] = 4;
-          board[player][y - 1][x] = 4;
-          board[player][y - 2][x] = 4;
-          board[player][y - 3][x] = 4;
+          board[y][x] = 4;
+          board[y - 1][x] = 4;
+          board[y - 2][x] = 4;
+          board[y - 3][x] = 4;
           this.setState({ board: board });
           validMove = true;
         }
       } else {
         if (
-          board[player][y][x] === 1 &&
-          board[player][y][x - 1] === 1 &&
-          board[player][y][x - 2] === 1 &&
-          board[player][y][x - 3] === 1
+          board[y][x] === 1 &&
+          board[y][x - 1] === 1 &&
+          board[y][x - 2] === 1 &&
+          board[y][x - 3] === 1
         ) {
-          board[player][y][x] = 4;
-          board[player][y][x - 1] = 4;
-          board[player][y][x - 2] = 4;
-          board[player][y][x - 3] = 4;
+          board[y][x] = 4;
+          board[y][x - 1] = 4;
+          board[y][x - 2] = 4;
+          board[y][x - 3] = 4;
           this.setState({ board: board });
           validMove = true;
         }
@@ -334,33 +334,33 @@ export default class sandbox extends Component {
 
       if (!horizontal) {
         if (
-          board[player][y][x] === 1 &&
-          board[player][y - 1][x] === 1 &&
-          board[player][y - 2][x] === 1 &&
-          board[player][y - 3][x] === 1 &&
-          board[player][y - 4][x] === 1
+          board[y][x] === 1 &&
+          board[y - 1][x] === 1 &&
+          board[y - 2][x] === 1 &&
+          board[y - 3][x] === 1 &&
+          board[y - 4][x] === 1
         ) {
-          board[player][y][x] = 5;
-          board[player][y - 1][x] = 5;
-          board[player][y - 2][x] = 5;
-          board[player][y - 3][x] = 5;
-          board[player][y - 4][x] = 5;
+          board[y][x] = 5;
+          board[y - 1][x] = 5;
+          board[y - 2][x] = 5;
+          board[y - 3][x] = 5;
+          board[y - 4][x] = 5;
           this.setState({ board: board });
           validMove = true;
         }
       } else {
         if (
-          board[player][y][x] === 1 &&
-          board[player][y][x - 1] === 1 &&
-          board[player][y][x - 2] === 1 &&
-          board[player][y][x - 3] === 1 &&
-          board[player][y][x - 4] === 1
+          board[y][x] === 1 &&
+          board[y][x - 1] === 1 &&
+          board[y][x - 2] === 1 &&
+          board[y][x - 3] === 1 &&
+          board[y][x - 4] === 1
         ) {
-          board[player][y][x] = 5;
-          board[player][y][x - 1] = 5;
-          board[player][y][x - 2] = 5;
-          board[player][y][x - 3] = 5;
-          board[player][y][x - 4] = 5;
+          board[y][x] = 5;
+          board[y][x - 1] = 5;
+          board[y][x - 2] = 5;
+          board[y][x - 3] = 5;
+          board[y][x - 4] = 5;
           this.setState({ board: board });
           validMove = true;
         }
