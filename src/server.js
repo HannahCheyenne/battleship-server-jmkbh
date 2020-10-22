@@ -1,5 +1,6 @@
 const knex = require('knex');
-const { app, server } = require('./app');
+const app  = require('./app');
+const { server } = require('./chat/chat-router');
 const { HTTP_PORT, WS_PORT, DATABASE_URL } = require('./config');
 
 
