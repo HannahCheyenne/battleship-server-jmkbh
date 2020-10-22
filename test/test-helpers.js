@@ -130,7 +130,7 @@ function seedUsers(db, users) {
  * @param {array} stats - array of stats objects for insertion
  * @returns {Promise} - when stats table seeded
  */
-async function seedStats(db, users, stats) {
+async function seedUsersStats(db, users, stats) {
   await seedUsers(db, users)
 
   await db.transaction(async trx => {
@@ -152,6 +152,6 @@ module.exports = {
   makeStatsArray,
   cleanTables,
   seedUsers,
-  seedStats,
+  seedUsersStats,
   makeAuthHeader
 }

@@ -14,9 +14,27 @@ gameStatsRouter
         req.app.get('db'),
         req.user.id,
       )
+      if (!stats) {
+        return res.status(404).json({
+          error: 'You don\'t have any stats',
+        })
+      }
+
       res.json({
-        stats
+        id: stats.id,
+        game_wins: stats.game_wins,
+        game_losses: stats.game_losses,
+        games_played: stats.games_played,
+        shots_hit: stats.shots_hit,
+        shots_missed: stats.shots_missed,
+        carrier_destroyed: stats.carrier_destroyed,
+        battleship_destroyed: stats.battleship_destroyed,
+        destroyer_destroyed: stats.destroyer_destroyed,
+        submarine_destroyed: stats.submarine_destroyed,
+        patrolboat_destroyed: stats.patrolboat_destroyed,
+        user_id: req.user.id,
       })
+
       next()
     } catch (error) {
       next(error)
@@ -25,25 +43,61 @@ gameStatsRouter
 
 gameStatsRouter
   .route('/')
-  .post(requireAuth, jsonBodyParser, async(req, res, next) => {
-    try{
+  .post(requireAuth, jsonBodyParser, async (req, res, next) => {
+    try {
       const updatedData = req.body
       const stats = await GameStatsService.getUsersStats(
         req.app.get('db'),
         req.user.id,
       )
 
+      //if no user stats
+      if (!stats) {
+        return res.status(404).json({
+          error: 'You don\'t have any stats',
+        })
+      }
+
+      const requiredFields = [
+        'game_wins',
+        'game_losses',
+        'games_played',
+        'shots_hit',
+        'shots_missed',
+        'carrier_destroyed',
+        'battleship_destroyed',
+        'destroyer_destroyed',
+        'submarine_destroyed',
+        'patrolboat_destroyed',
+        'user_id'
+      ]
+
+      //instantiate empty array for missing fields
+      const missingFields = []
+      //loop thru requiredFields and check for field in the updatedData that we are sending
+      requiredFields.forEach(field => {
+        if(!(field in updatedData)){
+          missingFields.push(field)
+        }
+      })
+      //sends error only once instead of at the error and at the end
+      if(missingFields.length) {
+        return res.status(400).json({
+          error: `Missing '${missingFields.join(', ')}' in request body`,
+        })
+      }
+
       //make an array of all the keys in stats object(already existing stuff in DB)
       const statsKeys = Object.keys(stats)
-      for(const key of statsKeys) {
+      for (const key of statsKeys) {
         const val1 = statsKeys[key]
         const val2 = updatedData[key]
         //if the values are different (or updated) then replace the value in stats with the new data
-        if(val1 !== val2) {
+        if (val1 !== val2) {
           stats[key] = updatedData[key]
         }
       }
-      
+
       await GameStatsService.updateGameStats(
         req.app.get('db'),
         stats
@@ -59,12 +113,12 @@ gameStatsRouter
         battleship_destroyed: stats.battleship_destroyed,
         destroyer_destroyed: stats.destroyer_destroyed,
         submarine_destroyed: stats.submarine_destroyed,
-        partolboat_destroyed: stats.partolboat_destroyed
+        patrolboat_destroyed: stats.patrolboat_destroyed
       }
 
       return res.status(200).json(responseForUser)
 
-    } catch(error) {
+    } catch (error) {
       next(error)
     }
   })

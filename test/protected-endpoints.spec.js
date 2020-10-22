@@ -43,7 +43,7 @@ describe('Protected Endpoints', function () {
       name: 'POST /api/stats',
       path: '/api/stats',
       method: supertest(app).post
-    }
+    },
   ]
 
   protectedEndpoints.forEach(endpoint => {
