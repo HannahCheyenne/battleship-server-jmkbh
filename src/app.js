@@ -9,13 +9,8 @@ const userRouter = require('./user/user-router');
 const gameStatsRouter = require('./gamestats/gamestats-router');
 const gameRouter = require('./game/game-router');
 const app = express();
-
 //chat features
 const { chatRouter } = require('./chat/chat-router');
-
-
-//---------------------------//
-
 
 const morganOption = (NODE_ENV === 'production')
     ? 'tiny'
@@ -47,10 +42,5 @@ app.use(function errorHandler(error, req, res, next) {
     }
     res.status(500).json(response);
 });
-
-
-//Chat Stuff//
-
-//------------------------------------------------------------//
 
 module.exports = app;
