@@ -45,6 +45,7 @@ authRouter
       }
       res.send({
         authToken: AuthService.createJwt(sub, payload),
+        username: sub
       })
     } catch (error) {
       next(error)
