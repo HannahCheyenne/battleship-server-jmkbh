@@ -18,8 +18,8 @@ const { chatRouter } = require('./chat/chat-router');
 
 
 const morganOption = (NODE_ENV === 'production')
-? 'tiny'
-: 'common';
+    ? 'tiny'
+    : 'common';
 
 app.use(morgan(morganOption));
 app.use(helmet());
@@ -35,6 +35,7 @@ app.use('/api/user', userRouter);
 app.use('/api/stats', gameStatsRouter);
 app.use(chatRouter);
 //app.use('/api/game', gameRouter);
+
 
 app.use(function errorHandler(error, req, res, next) {
     let response;
