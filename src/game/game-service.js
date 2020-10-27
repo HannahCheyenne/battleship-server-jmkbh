@@ -51,6 +51,7 @@ const GameService = {
 
   initializeGame(db, newState) {
     console.log("initializeGame -> newState", newState);
+
     return db("game_state")
       .insert({
         p1_board: newState.p1_board,

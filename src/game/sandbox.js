@@ -350,11 +350,11 @@ export default class sandbox extends Component {
         }
       } else {
         if (
-          board[y][x] === 1 &&
-          board[y][x - 1] === 1 &&
-          board[y][x - 2] === 1 &&
-          board[y][x - 3] === 1 &&
-          board[y][x - 4] === 1
+          board[y][x] === 7 &&
+          board[y][x - 1] === 7 &&
+          board[y][x - 2] === 7 &&
+          board[y][x - 3] === 7 &&
+          board[y][x - 4] === 7
         ) {
           board[y][x] = 5;
           board[y][x - 1] = 5;
