@@ -121,14 +121,14 @@ export default class sandbox extends Component {
 
     this.getDumbAiMove();
 
-    console.log(
-      "sandbox -> handleSubmit -> this.state.p1Health",
-      this.state.p1Health
-    );
-    console.log(
-      "sandbox -> handleSubmit -> this.state.p1Health",
-      this.state.p2Health
-    );
+    // console.log(
+    //   "sandbox -> handleSubmit -> this.state.p1Health",
+    //   this.state.p1Health
+    // );
+    // console.log(
+    //   "sandbox -> handleSubmit -> this.state.p1Health",
+    //   this.state.p2Health
+    // );
 
     if (this.state.p1Health <= 0) {
       this.setState({
@@ -165,9 +165,9 @@ export default class sandbox extends Component {
 
     while (!validMove) {
       y = Math.floor(Math.random() * 7) + 1;
-      console.log("2 sandbox -> setSm -> y", y);
+      // console.log("2 sandbox -> setSm -> y", y);
       x = Math.floor(Math.random() * 7) + 1;
-      console.log("2 sandbox -> setSm -> x", x);
+      // console.log("2 sandbox -> setSm -> x", x);
       horizontal = Math.random() < 0.5;
 
       if (!horizontal) {
@@ -197,9 +197,9 @@ export default class sandbox extends Component {
 
     while (!validMove) {
       y = Math.floor(Math.random() * 6) + 2;
-      console.log("3 sandbox -> y", y);
+      // console.log("3 sandbox -> y", y);
       x = Math.floor(Math.random() * 6) + 2;
-      console.log("3 sandbox -> x", x);
+      // console.log("3 sandbox -> x", x);
       horizontal = Math.random() < 0.5;
 
       if (!horizontal) {
@@ -239,9 +239,9 @@ export default class sandbox extends Component {
 
     while (!validMove) {
       y = Math.floor(Math.random() * 6) + 2;
-      console.log("3 sandbox -> y", y);
+      // console.log("3 sandbox -> y", y);
       x = Math.floor(Math.random() * 6) + 2;
-      console.log("3 sandbox -> x", x);
+      // console.log("3 sandbox -> x", x);
       horizontal = Math.random() < 0.5;
 
       if (!horizontal) {
@@ -281,9 +281,9 @@ export default class sandbox extends Component {
 
     while (!validMove) {
       y = Math.floor(Math.random() * 5) + 3;
-      console.log("3 sandbox -> y", y);
+      // console.log("3 sandbox -> y", y);
       x = Math.floor(Math.random() * 5) + 3;
-      console.log("3 sandbox -> x", x);
+      // console.log("3 sandbox -> x", x);
       horizontal = Math.random() < 0.5;
 
       if (!horizontal) {
@@ -327,9 +327,9 @@ export default class sandbox extends Component {
 
     while (!validMove) {
       y = Math.floor(Math.random() * 4) + 4;
-      console.log("3 sandbox -> y", y);
+      // console.log("3 sandbox -> y", y);
       x = Math.floor(Math.random() * 4) + 4;
-      console.log("3 sandbox -> x", x);
+      // console.log("3 sandbox -> x", x);
       horizontal = Math.random() < 0.5;
 
       if (!horizontal) {

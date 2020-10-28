@@ -12,6 +12,7 @@ gameRouter
 
   .get(jsonBodyParser, async (req, res, next) => {
     try {
+      console.log(req)
       const rawState = await Game.getGameState(
         req.app.get("db"),
         req.params.id
@@ -47,7 +48,8 @@ gameRouter
     }
   });
 
-gameRouter.route("/newgame").post(jsonBodyParser, async (req, res, next) => {
+gameRouter.route("/newgame").post(requireAuth, jsonBodyParser, async (req, res, next) => {
+  console.log(req.user.id)
   try {
     const newGame = req.body;
     const id = await Game.initializeGame(req.app.get("db"), newGame);
@@ -70,7 +72,7 @@ gameRouter.route("/aimove/:id").patch( async (req, res, next) => {
     let gameState = rawState[0];
     
     gameState = Game.checkAiHit(gameState);
-    console.log("gameState", gameState)
+    // console.log("gameState", gameState)
     
     gameState.player_turn = true;
     
