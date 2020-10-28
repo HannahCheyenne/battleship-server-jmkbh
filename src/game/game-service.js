@@ -50,12 +50,19 @@ const GameService = {
       let x = 0;
       let y = 0;
       let cell;
+      let timeout = 100;
 
       while (!validMove) {
         y = Math.floor(Math.random() * 8);
         x = Math.floor(Math.random() * 8);
         cell = gameState.p1_board[x][y];
         if (cell !== 9 && cell !== 8) {
+          validMove = true;
+        }
+
+        timeout -= 1;
+        if (timeout < 0) {
+          //! This should return an error, not valid, this is just for testing
           validMove = true;
         }
       }
@@ -75,7 +82,7 @@ const GameService = {
   },
 
   coinFlip() {
-    return parseInt(Math.random() * 2);
+    return parseInt(Math.random() * 2) + 1;
   },
 
   generateBoard() {
@@ -94,16 +101,22 @@ const GameService = {
     let y = 0;
 
     for (let shipId = 4; shipId >= 0; shipId--) {
-      console.log("generateBoard -> shipId", shipId)
-      console.log("generateBoard -> x", x)
-      console.log("generateBoard -> y", y)
-      console.log("generateBoard -> dirX", dirX);
-      console.log("generateBoard -> dirY", dirY);
+      y = Math.floor(Math.random() * 7) + 1;
+      x = Math.floor(Math.random() * 7) + 1;
 
-      board = this.placeShip(x, y, dirX, dirY, board, shipId);
+      let dirX = 0;
+      let dirY = 0;
+      if (this.coinFlip()) {
+        dirX = parseInt(Math.floor(Math.random() * 3)) - 1;
+      } else {
+        dirY = parseInt(Math.floor(Math.random() * 3)) - 1;
+      }
+
+      board = this.checkCells(x, y, dirX, dirY, board, shipId);
+
+      console.log("generateBoard -> board", board);
     }
 
-    console.log("generateBoard -> board", board);
     return board;
   },
 
@@ -123,34 +136,9 @@ const GameService = {
     }
   },
 
-  placeShip(dirX, dirY, board, shipId) {
+  checkCells(anchorX, anchorY, dirX, dirY, board, shipId) {
     const shipLength = this.shipLength(shipId);
     let allClear = true;
-
-    
-
-    let validMove
-
-    while(!validMove)
-      {
-        let dirX = 0;
-        let dirY = 0;
-        
-        if (this.coinFlip()==1) {
-          if (this.coinFlip()==1) {
-            dirX = -1;
-          } else {  
-            dirX = 1;
-          }
-        } else { 
-          if (this.coinFlip()) {
-            dirY = -1;
-          } else { 
-            dirY = 1;
-          }
-        }
-
-
     for (let i = 0; i < shipLength; i++) {
       let x = anchorX + i * dirX;
       let y = anchorY + i * dirY;
@@ -162,7 +150,6 @@ const GameService = {
         allClear = false;
       }
     }
-
     if (allClear) {
       for (let i = 0; i < shipLength; i++) {
         let x = anchorX + i * dirX;
@@ -170,10 +157,6 @@ const GameService = {
         board[x][y] = shipId;
       }
     }
-  
-  }
-
-    console.log("placeShip -> board", board, shipId);
     return board;
   },
 

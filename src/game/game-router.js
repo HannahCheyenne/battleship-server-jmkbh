@@ -70,7 +70,7 @@ gameRouter.route("/aimove/:id").patch( async (req, res, next) => {
     let gameState = rawState[0];
     
     gameState = Game.checkAiHit(gameState);
-    //console.log("gameState", gameState)
+    console.log("gameState", gameState)
     
     gameState.player_turn = true;
     
