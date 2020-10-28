@@ -1,15 +1,22 @@
 const express = require('express');
 const multiRouter = express.Router();
-const app = require('../app');
-
-const http = require('http');
 const socketIo = require('socket.io');
-const server = http.createServer(app);
+const server = require('../socket');
 const io = socketIo(server);
+
+
+multiRouter
+    .route('/')
+    .get((req, res) => {
+        res.redirect('https://http://localhost:4000/');
+    });
+
+
 
 const connections = [null, null];
 
 io.on('connection', socket => {
+    console.log('Multi Connected');
 
     // Find an available player number
     let playerIndex = -1;
@@ -37,7 +44,7 @@ io.on('connection', socket => {
     socket.on('disconnect', () => {
         console.log(`Player ${playerIndex} disconnected`);
         connections[playerIndex] = null;
-        //Tell everyone what player numbe just disconnected
+        //Tell everyone what player number just disconnected
         socket.broadcast.emit('player-connection', playerIndex);
     });
 
@@ -80,3 +87,4 @@ io.on('connection', socket => {
     }, 600000); // 10 minute limit per player
 });
 
+module.exports = multiRouter;

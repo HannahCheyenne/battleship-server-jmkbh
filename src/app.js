@@ -10,7 +10,8 @@ const gameStatsRouter = require('./gamestats/gamestats-router');
 const gameRouter = require('./game/game-router');
 const app = express();
 //chat features
-const { chatRouter } = require('./chat/chat-router');
+const  chatRouter  = require('./chat/chat-router');
+const multiRouter = require('./multi/multi-router');
 
 const morganOption = (NODE_ENV === 'production')
     ? 'tiny'
@@ -29,6 +30,7 @@ app.use('/api/auth', authRouter);
 app.use('/api/user', userRouter);
 app.use('/api/stats', gameStatsRouter);
 app.use(chatRouter);
+app.use(multiRouter);
 //app.use('/api/game', gameRouter);
 
 

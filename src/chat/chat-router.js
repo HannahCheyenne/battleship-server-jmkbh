@@ -8,8 +8,6 @@ const { addUser,
 const server = require('../socket');
 const io = socketIo(server);
 
-
-//!Chat Functions//
 chatRouter
     .route('/')
     .get((req, res) => {
@@ -18,6 +16,8 @@ chatRouter
     
 io.on('connect', (socket) => {
     socket.on('join', ({ name, room }, callback) => {
+        console.log('Chat Connected');
+        
         const { error, user } = addUser({ id: socket.id, name, room });
 
         if (error) return callback(error);
@@ -50,4 +50,4 @@ io.on('connect', (socket) => {
     });
 });
 
-module.exports = { chatRouter };
+module.exports =  chatRouter ;
