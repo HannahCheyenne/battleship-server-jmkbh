@@ -1,14 +1,11 @@
 const express = require('express');
 const chatRouter = express.Router();
-const app = require('../app');
-
-const http = require('http');
 const socketIo = require('socket.io');
 const { addUser,
     removeUser,
     getUser,
     getUsersInRoom } = require('./chat-users');
-const server = http.createServer(app);
+const server = require('../socket');
 const io = socketIo(server);
 
 chatRouter
@@ -51,4 +48,4 @@ io.on('connect', (socket) => {
     });
 });
 
-module.exports = { chatRouter, server };
+module.exports = { chatRouter };
