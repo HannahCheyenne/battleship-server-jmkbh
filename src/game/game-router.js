@@ -37,6 +37,7 @@ gameRouter
       const { x, y } = req.body;
       //TODO validateMove(gameBoard, x,y)
       gameState = Game.checkHit(gameState, x, y);
+      //console.log("newState", gameState);
       gameState.player_turn = false;
       await Game.postGameState(req.app.get("db"), gameState);
       res.json({
@@ -52,7 +53,9 @@ gameRouter.route("/newgame").post(requireAuth, jsonBodyParser, async (req, res, 
   console.log(req.user.id)
   try {
     const newGame = req.body;
+    //console.log("req.body", req.body)
     const id = await Game.initializeGame(req.app.get("db"), newGame);
+    //console.log("id", id)
     const rawState = await Game.getGameState(req.app.get("db"), id[0]);
     const gameState = rawState[0];
     res.json({
