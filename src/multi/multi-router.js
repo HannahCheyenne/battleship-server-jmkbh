@@ -1,60 +1,12 @@
 const express = require('express');
-const chatRouter = express.Router();
+const multiRouter = express.Router();
 const app = require('../app');
 
 const http = require('http');
 const socketIo = require('socket.io');
-const { addUser,
-    removeUser,
-    getUser,
-    getUsersInRoom } = require('./chat-users');
 const server = http.createServer(app);
 const io = socketIo(server);
 
-
-//!Chat Functions//
-chatRouter
-    .route('/')
-    .get((req, res) => {
-        res.redirect('https://http://localhost:4000/');
-    });
-    
-io.on('connect', (socket) => {
-    socket.on('join', ({ name, room }, callback) => {
-        const { error, user } = addUser({ id: socket.id, name, room });
-
-        if (error) return callback(error);
-
-        socket.join(user.room);
-
-        socket.emit('message', { user: 'admin', text: `${user.name}, welcome to room ${user.room}.` });
-        socket.broadcast.to(user.room).emit('message', { user: 'admin', text: `${user.name} has joined!` });
-
-        io.to(user.room).emit('roomData', { room: user.room, users: getUsersInRoom(user.room) });
-
-        callback();
-    });
-
-    socket.on('sendMessage', (message, callback) => {
-        const user = getUser(socket.id);
-
-        io.to(user.room).emit('message', { user: user.name, text: message });
-
-        callback();
-    });
-
-    socket.on('disconnect', () => {
-        const user = removeUser(socket.id);
-
-        if (user) {
-            io.to(user.room).emit('message', { user: 'Admin', text: `${user.name} has left.` });
-            io.to(user.room).emit('roomData', { room: user.room, users: getUsersInRoom(user.room) });
-        }
-    });
-});
-
-
-//!Multiplayer Functions//
 const connections = [null, null];
 
 io.on('connection', socket => {
@@ -78,7 +30,7 @@ io.on('connection', socket => {
 
     connections[playerIndex] = false;
 
-    // Tell everyone what player number just connected
+    // Tell eveyone what player number just connected
     socket.broadcast.emit('player-connection', playerIndex);
 
     // Handle Diconnect
@@ -128,4 +80,3 @@ io.on('connection', socket => {
     }, 600000); // 10 minute limit per player
 });
 
-module.exports = { chatRouter, server };
