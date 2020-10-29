@@ -86,7 +86,6 @@ const GameService = {
   },
 
   generateBoard() {
-    //TODO return info
     let board = [
       [7, 7, 7, 7, 7, 7, 7, 7],
       [7, 7, 7, 7, 7, 7, 7, 7],
@@ -102,20 +101,10 @@ const GameService = {
     let y = 0;
 
     for (let shipId = 4; shipId >= 0; shipId--) {
-      y = Math.floor(Math.random() * 7) + 1;
-      x = Math.floor(Math.random() * 7) + 1;
-
-      let dirX = 0;
-      let dirY = 0;
-      if (this.coinFlip()) {
-        dirX = parseInt(Math.floor(Math.random() * 3)) - 1;
-      } else {
-        dirY = parseInt(Math.floor(Math.random() * 3)) - 1;
-      }
-      board = this.checkCells(x, y, dirX, dirY, board, shipId);
-
-      // console.log("generateBoard -> board", board);
+      board = this.placeShip(board, shipId);
     }
+
+    console.log("generateBoard -> board", board);
     return board;
   },
 
@@ -135,33 +124,57 @@ const GameService = {
     }
   },
 
-  checkCells(anchorX, anchorY, dirX, dirY, board, shipId) {
+  placeShip(board, shipId) {
     const shipLength = this.shipLength(shipId);
     let allClear = true;
-    for (let i = 0; i < shipLength; i++) {
-      let x = anchorX + i * dirX;
-      let y = anchorY + i * dirY;
-      if (x >= 0 && x <= 7 && y >= 0 && y <= 7) {
-        if (board[x][y] !== 7) {
-          allClear = false;
+    let dirX = 0;
+    let dirY = 0;
+    let anchorX = 0;
+    let anchorY = 0;
+    let validAnchor = false;
+    let validPlacement = false;
+    
+    while (!validPlacement) {
+      while (!validAnchor) {
+        anchorX = parseInt(Math.random() * 8);
+        console.log("placeShip -> anchorX", anchorX)
+        anchorY = parseInt(Math.random() * 8);
+        console.log("placeShip -> anchorY", anchorY)
+        if (board[anchorX][anchorY] === 7) validAnchor = true;
+      }
+      if (this.coinFlip() == 1) {
+        if (this.coinFlip() == 1) {
+          dirX = -1;
+        } else {
+          dirX = 1;
         }
       } else {
-        allClear = true;
+        if (this.coinFlip()) {
+          dirY = -1;
+        } else {
+          dirY = 1;
+        }
       }
-    }
-    if (allClear) {
+
       for (let i = 0; i < shipLength; i++) {
         let x = anchorX + i * dirX;
         let y = anchorY + i * dirY;
-        board[x][y] = shipId;
+        if (x >= 0 && x <= 7 && y >= 0 && y <= 7) {
+          if (board[x][y] !== 7) {
+            allClear = false;
+          }
+        } else {
+          allClear = false;
+        }
       }
-    } else {
-      y = Math.floor(Math.random() * 7) + 1;
-      x = Math.floor(Math.random() * 7) + 1;
-      for (let i = 0; i < shipLength; i++) {
-        let x = anchorX + i * dirX;
-        let y = anchorY + i * dirY;
-        board[x][y] = shipId;
+
+      if (allClear) {
+        for (let i = 0; i < shipLength; i++) {
+          let x = anchorX + i * dirX;
+          let y = anchorY + i * dirY;
+          board[x][y] = shipId;
+        }
+        validPlacement = true;
       }
     }
     return board;
