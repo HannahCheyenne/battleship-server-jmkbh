@@ -9,7 +9,6 @@ const jsonBodyParser = express.json();
 
 gameRouter
   .route("/:id")
-
   .get(jsonBodyParser, async (req, res, next) => {
     try {
       const rawState = await Game.getGameState(
@@ -64,15 +63,16 @@ gameRouter
     }
   });
 
-gameRouter.route("/genboard").get(async (req, res, next) => {
+gameRouter.route('/genboard').get( async (req, res, next) => {
   try {
-    const board = await Game.generateBoard();
+    const newBoard = await Game.test();
+    console.log("board", newBoard)
     res.json({
       board,
     });
-    next();
+    next()
   } catch (error) {
-    next(error);
+    next(error)
   }
 });
 

@@ -103,7 +103,7 @@ const GameService = {
     for (let shipId = 4; shipId >= 0; shipId--) {
       board = this.placeShip(board, shipId);
     }
-    //console.log("generateBoard -> board", board)
+    console.log("generateBoard -> board", board)
     return board;
   },
 
@@ -168,7 +168,7 @@ const GameService = {
             allClear = true;
           }
         } else {
-            allClear = false;
+          allClear = false;
         }
       }
       if (allClear) {
@@ -181,6 +181,11 @@ const GameService = {
       }
     }
     return board;
+  },
+
+  test() {
+    let testBoard = this.generateBoard();
+    return testBoard
   },
 
   initializeGame(db, newState) {
