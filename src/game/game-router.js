@@ -12,7 +12,6 @@ gameRouter
 
   .get(jsonBodyParser, async (req, res, next) => {
     try {
-      console.log(req)
       const rawState = await Game.getGameState(
         req.app.get("db"),
         req.params.id
@@ -37,7 +36,6 @@ gameRouter
       const { x, y } = req.body;
       //TODO validateMove(gameBoard, x,y)
       gameState = Game.checkHit(gameState, x, y);
-      //console.log("newState", gameState);
       gameState.player_turn = false;
       await Game.postGameState(req.app.get("db"), gameState);
       res.json({
@@ -49,17 +47,28 @@ gameRouter
     }
   });
 
-gameRouter.route("/newgame").post(requireAuth, jsonBodyParser, async (req, res, next) => {
-  console.log(req.user.id)
+gameRouter
+  .route("/newgame")
+  .post(requireAuth, jsonBodyParser, async (req, res, next) => {
+    try {
+      const newGame = req.body;
+      const id = await Game.initializeGame(req.app.get("db"), newGame);
+      const rawState = await Game.getGameState(req.app.get("db"), id[0]);
+      const gameState = rawState[0];
+      res.json({
+        gameState,
+      });
+      next();
+    } catch (error) {
+      next(error);
+    }
+  });
+
+gameRouter.route("/genboard").get(async (req, res, next) => {
   try {
-    const newGame = req.body;
-    //console.log("req.body", req.body)
-    const id = await Game.initializeGame(req.app.get("db"), newGame);
-    //console.log("id", id)
-    const rawState = await Game.getGameState(req.app.get("db"), id[0]);
-    const gameState = rawState[0];
+    const board = await Game.generateBoard();
     res.json({
-      gameState,
+      board,
     });
     next();
   } catch (error) {
@@ -67,18 +76,15 @@ gameRouter.route("/newgame").post(requireAuth, jsonBodyParser, async (req, res, 
   }
 });
 
-gameRouter.route("/aimove/:id").patch( async (req, res, next) => {
+gameRouter.route("/aimove/:id").patch(async (req, res, next) => {
   try {
-
-    
     const rawState = await Game.getGameState(req.app.get("db"), req.params.id);
     let gameState = rawState[0];
-    
+
     gameState = Game.checkAiHit(gameState);
-    // console.log("gameState", gameState)
-    
+
     gameState.player_turn = true;
-    
+
     await Game.postGameState(req.app.get("db"), gameState);
     res.json({
       gameState,

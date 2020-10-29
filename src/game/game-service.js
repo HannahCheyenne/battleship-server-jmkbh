@@ -103,8 +103,7 @@ const GameService = {
     for (let shipId = 4; shipId >= 0; shipId--) {
       board = this.placeShip(board, shipId);
     }
-
-    console.log("generateBoard -> board", board);
+    //console.log("generateBoard -> board", board)
     return board;
   },
 
@@ -129,18 +128,22 @@ const GameService = {
     let allClear = true;
     let dirX = 0;
     let dirY = 0;
+    const dir = [1, 2, 3, 4];
     let anchorX = 0;
     let anchorY = 0;
     let validAnchor = false;
     let validPlacement = false;
-    
+
     while (!validPlacement) {
+      dirX = 0;
+      dirY = 0;
+      validAnchor = false;
       while (!validAnchor) {
-        anchorX = parseInt(Math.random() * 8);
-        console.log("placeShip -> anchorX", anchorX)
-        anchorY = parseInt(Math.random() * 8);
-        console.log("placeShip -> anchorY", anchorY)
-        if (board[anchorX][anchorY] === 7) validAnchor = true;
+        anchorX = Math.floor(Math.random() * (9 - shipLength) + shipLength - 1);
+        anchorY = Math.floor(Math.random() * (9 - shipLength) + shipLength - 1);
+        if (board[anchorX][anchorY] === 7) {
+          validAnchor = true;
+        }
       }
       if (this.coinFlip() == 1) {
         if (this.coinFlip() == 1) {
@@ -155,26 +158,26 @@ const GameService = {
           dirY = 1;
         }
       }
-
       for (let i = 0; i < shipLength; i++) {
         let x = anchorX + i * dirX;
         let y = anchorY + i * dirY;
         if (x >= 0 && x <= 7 && y >= 0 && y <= 7) {
           if (board[x][y] !== 7) {
             allClear = false;
+          } else {
+            allClear = true;
           }
         } else {
-          allClear = false;
+            allClear = false;
         }
       }
-
       if (allClear) {
+        validPlacement = true;
         for (let i = 0; i < shipLength; i++) {
           let x = anchorX + i * dirX;
           let y = anchorY + i * dirY;
           board[x][y] = shipId;
         }
-        validPlacement = true;
       }
     }
     return board;
