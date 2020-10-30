@@ -133,8 +133,9 @@ const GameService = {
     let anchorY = 0;
     let validAnchor = false;
     let validPlacement = false;
-
+    
     while (!validPlacement) {
+      allClear = true;
       dirX = 0;
       dirY = 0;
       validAnchor = false;
@@ -165,7 +166,7 @@ const GameService = {
           if (board[x][y] !== 7) {
             allClear = false;
           } else {
-            allClear = true;
+            
           }
         } else {
           allClear = false;
