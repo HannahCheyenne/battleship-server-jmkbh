@@ -103,7 +103,7 @@ const GameService = {
     for (let shipId = 4; shipId >= 0; shipId--) {
       board = this.placeShip(board, shipId);
     }
-    console.log("generateBoard -> board", board)
+    console.log("generateBoard -> board", board);
     return board;
   },
 
@@ -133,15 +133,15 @@ const GameService = {
     let anchorY = 0;
     let validAnchor = false;
     let validPlacement = false;
-    
+
     while (!validPlacement) {
       allClear = true;
       dirX = 0;
       dirY = 0;
       validAnchor = false;
       while (!validAnchor) {
-        anchorX = Math.floor(Math.random() * 7 )//(9 - shipLength) + shipLength - 1);
-        anchorY = Math.floor(Math.random() * 7 )//(9 - shipLength) + shipLength - 1);
+        anchorX = Math.floor(Math.random() * 8); //(9 - shipLength) + shipLength - 1);
+        anchorY = Math.floor(Math.random() * 8); //(9 - shipLength) + shipLength - 1);
         if (board[anchorX][anchorY] === 7) {
           validAnchor = true;
         }
@@ -166,7 +166,6 @@ const GameService = {
           if (board[x][y] !== 7) {
             allClear = false;
           } else {
-            
           }
         } else {
           allClear = false;
@@ -183,8 +182,6 @@ const GameService = {
     }
     return board;
   },
-
-
 
   initializeGame(db, newState) {
     let aiBoard = this.generateBoard();
