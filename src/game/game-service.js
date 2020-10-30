@@ -139,8 +139,8 @@ const GameService = {
       dirY = 0;
       validAnchor = false;
       while (!validAnchor) {
-        anchorX = Math.floor(Math.random() * (9 - shipLength) + shipLength - 1);
-        anchorY = Math.floor(Math.random() * (9 - shipLength) + shipLength - 1);
+        anchorX = Math.floor(Math.random() * 7 )//(9 - shipLength) + shipLength - 1);
+        anchorY = Math.floor(Math.random() * 7 )//(9 - shipLength) + shipLength - 1);
         if (board[anchorX][anchorY] === 7) {
           validAnchor = true;
         }
@@ -183,10 +183,7 @@ const GameService = {
     return board;
   },
 
-  test() {
-    let testBoard = this.generateBoard();
-    return testBoard
-  },
+
 
   initializeGame(db, newState) {
     let aiBoard = this.generateBoard();

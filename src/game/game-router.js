@@ -65,6 +65,7 @@ gameRouter
 gameRouter.route("/genboard").get((req, res, next) => {
   try {
     const board = Game.generateBoard();
+    console.log("board", board)
     res.json({
       board,
     });
