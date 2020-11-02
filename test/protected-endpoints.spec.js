@@ -21,7 +21,7 @@ describe('Protected Endpoints', function () {
   afterEach('cleanup', () => helpers.cleanTables(db))
 
   beforeEach('insert users and game stats', () => {
-    return helpers.seedStats(
+    return helpers.seedUsersStats(
       db,
       testUsers,
       testStats,
@@ -43,6 +43,21 @@ describe('Protected Endpoints', function () {
       name: 'POST /api/stats',
       path: '/api/stats',
       method: supertest(app).post
+    },
+    {
+      name: `POST /api/game/newgame`,
+      path: `/api/game/newgame`,
+      method: supertest(app).post
+    },
+    {
+      name: `POST /api/game/mp/newgame`,
+      path: `/api/game/mp/newgame`,
+      method: supertest(app).post
+    },
+    {
+      name: `POST /api/game/mp/setboard/:id`,
+      path: `/api/game/mp/setboard/:id`,
+      method: supertest(app).patch
     },
   ]
 
