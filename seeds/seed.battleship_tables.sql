@@ -82,7 +82,7 @@ VALUES
 
 SELECT setval('game_stats_id_seq', (SELECT MAX(id) from "game_stats"));
 SELECT setval('game_state_id_seq', (SELECT MAX(id) from "game_state"));
-SELECT setval('ai_boards_id_seq', (SELECT MAX(id) from "ai_boards"));
+-- SELECT setval('ai_boards_id_seq', (SELECT MAX(id) from "ai_boards"));
 SELECT setval('user_id_seq', (SELECT MAX(id) from "user"));
 
 COMMIT;

@@ -11,7 +11,8 @@ const GameService = {
         "player_turn",
         "active_game"
       )
-      .where("id", id);
+      .where("id", id)
+      .first();
   },
 
   postGameState(db, newState) {
@@ -29,15 +30,15 @@ const GameService = {
     if (gameState.player_turn) {
       const cell = gameState.p2_board[x][y];
       if (cell >= 0 && cell <= 4) {
-        //hit!
+        //TODO hit!
         gameState.p2_health[cell] -= 1;
         const total_health = gameState.p2_health.reduce(
           (accumulator, currentValue) => accumulator + currentValue
         );
-        if (total_health <= 0) gameState.active_game = false; // game over!
+        if (total_health <= 0) gameState.active_game = false; //TODO game over!
         gameState.p2_board[x][y] = 8;
       } else {
-        //miss!
+        //TODO miss!
         gameState.p2_board[x][y] = 9;
       }
     }
@@ -193,6 +194,69 @@ const GameService = {
         p2_health: newState.p2_health,
         player_turn: newState.player_turn,
         active_game: newState.active_game,
+      })
+      .returning("id");
+  },
+
+  setMPBoard(gameState, newBoard) {
+    if (newBoard.player === 1) {
+      //update p1_board and health
+      gameState.p1_board = newBoard.board;
+      gameState.p1_health = newBoard.health;
+    } else if (newBoard.player === 2) {
+      //update p2_board and health
+      gameState.p2_board = newBoard.board;
+      gameState.p1_health = newBoard.health;
+    }
+
+    if (gameState.p1_health[0] === 2 && gameState.p2_health[0] === 2) {
+      gameState.active_game = true;
+    }
+
+    return db("game_state").insert({
+      p1_board: gameState.p1_board,
+      p2_board: gameState.p2_board,
+      p1_health: gameState.p1_health,
+      p2_health: gameState.p2_health,
+      active_game: gameState.active_game,
+    });
+  },
+
+  initializeMPGame(db) {
+    let initialBoard = {
+      p1_board: [
+        [7, 7, 7, 7, 7, 7, 7, 7],
+        [7, 7, 7, 7, 7, 7, 7, 7],
+        [7, 7, 7, 7, 7, 7, 7, 7],
+        [7, 7, 7, 7, 7, 7, 7, 7],
+        [7, 7, 7, 7, 7, 7, 7, 7],
+        [7, 7, 7, 7, 7, 7, 7, 7],
+        [7, 7, 7, 7, 7, 7, 7, 7],
+        [7, 7, 7, 7, 7, 7, 7, 7],
+      ],
+      //opponent
+      p2_board: [
+        [7, 7, 7, 7, 7, 7, 7, 7],
+        [7, 7, 7, 7, 7, 7, 7, 7],
+        [7, 7, 7, 7, 7, 7, 7, 7],
+        [7, 7, 7, 7, 7, 7, 7, 7],
+        [7, 7, 7, 7, 7, 7, 7, 7],
+        [7, 7, 7, 7, 7, 7, 7, 7],
+        [7, 7, 7, 7, 7, 7, 7, 7],
+        [7, 7, 7, 7, 7, 7, 7, 7],
+      ],
+      p1_health: [0, 0, 0, 0, 0],
+      p2_health: [0, 0, 0, 0, 0],
+      active_game: false,
+    };
+
+    return db("game_state")
+      .insert({
+        p1_board: initialBoard.p1_board,
+        p2_board: initialBoard.p2_board,
+        p1_health: initialBoard.p1_health,
+        p2_health: initialBoard.p2_health,
+        active_game: initialBoard.active_game,
       })
       .returning("id");
   },
