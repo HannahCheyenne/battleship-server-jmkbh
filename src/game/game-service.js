@@ -1,3 +1,5 @@
+const GameStatsService = require("../gamestats/gamestats-service");
+
 const GameService = {
   getGameState(db, id) {
     return db
@@ -26,29 +28,46 @@ const GameService = {
     });
   },
 
-  checkHit(gameState, x, y, user_id) {
+  checkHit(gameState, x, y, stats) {
     if (gameState.player_turn) {
       const cell = gameState.p2_board[x][y];
       if (cell >= 0 && cell <= 4) {
-        //TODO hit!
+        stats.shots_hit += 1;
         gameState.p2_health[cell] -= 1;
+        if (gameState.p2_health[cell] <= 0) {
+          if (cell === 0) {
+            stats.patrolboat_destroyed += 1;
+          } else if (cell === 1) {
+            stats.submarine_destroyed += 1;
+          } else if (cell === 2) {
+            stats.destroyer_destroyed += 1;
+          } else if (cell === 3) {
+            stats.battleship_destroyed += 1;
+          } else if (cell === 4) {
+            stats.carrier_destroyed += 1;
+          }
+        }
         const total_health = gameState.p2_health.reduce(
           (accumulator, currentValue) => accumulator + currentValue
         );
-        if (total_health <= 0) gameState.active_game = false; //TODO game over!
+        if (total_health <= 0) {
+          stats.games_played += 1;
+          stats.game_wins += 1;
+          gameState.active_game = false;
+        }
         gameState.p2_board[x][y] = 8;
         gameState.player_turn = false;
-      } else if (cell === 7)
-      {
-        //TODO miss!
+      } else if (cell === 7) {
+        stats.shots_missed += 1;
         gameState.p2_board[x][y] = 9;
         gameState.player_turn = false;
-      }
+      } 
     }
-    return gameState;
+    gameState.player_turn = false;
+    return [gameState, stats];
   },
 
-  checkAiHit(gameState) {
+  checkAiHit(gameState, stats) {
     if (!gameState.player_turn) {
       let validMove = false;
       let x = 0;
@@ -74,14 +93,18 @@ const GameService = {
         //hit!
         gameState.p1_health[cell] -= 1;
         const total_health = gameState.p1_health.reduce((a, c) => a + c);
-        if (total_health <= 0) gameState.active_game = false; // game over!
+        if (total_health <= 0) {
+          stats.games_played += 1;
+          stats.game_losses += 1;
+          gameState.active_game = false;
+        }
         gameState.p1_board[x][y] = 8;
       } else {
         //miss!
         gameState.p1_board[x][y] = 9;
       }
     }
-    return gameState;
+    return [gameState, stats];
   },
 
   coinFlip() {

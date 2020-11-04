@@ -5,6 +5,7 @@ const { requireAuth } = require("../middleware/jwt-auth");
 const { postGameState, initializeGame } = require("./game-service");
 const gameRouter = express.Router();
 const jsonBodyParser = express.json();
+const GameStatsService = require("../gamestats/gamestats-service");
 
 gameRouter
   .route("/gamestate/:id")
@@ -33,11 +34,19 @@ gameRouter
     try {
       let gameState = await Game.getGameState(req.app.get("db"), req.params.id);
       const { x, y } = req.body;
-      const user_id = req.app.user_id;
-      
-      console.log("user_id", req.params)
-      
-      gameState = Game.checkHit(gameState, x, y, req.app.get("db"), user_id);
+      const user_id = req.user.id;
+      let stats = await GameStatsService.getUsersStats(
+        req.app.get("db"),
+        user_id
+      ).then((data) => {
+        return data;
+      });
+      results = Game.checkHit(gameState, x, y, stats);
+      gamestate = results[0];
+      stats = results[1];
+
+      await GameStatsService.updateGameStats(req.app.get("db"), stats);
+
       await Game.postGameState(req.app.get("db"), gameState);
       res.json({
         gameState,
@@ -86,6 +95,7 @@ gameRouter
     try {
       const newBoard = req.body;
       const id = req.params.id;
+
       let gameState = await Game.getGameState(req.app.get("db"), id);
 
       let newState = await Game.setMPBoard(
@@ -116,12 +126,21 @@ gameRouter.route("/genboard").get((req, res, next) => {
   }
 });
 
-gameRouter.route("/aimove/:id").patch(async (req, res, next) => {
+gameRouter.route("/aimove/:id").patch(requireAuth, async (req, res, next) => {
   try {
     let gameState = await Game.getGameState(req.app.get("db"), req.params.id);
-    gameState = Game.checkAiHit(gameState);
-    gameState.player_turn = true;
+    let stats = await GameStatsService.getUsersStats(
+      req.app.get("db"),
+      req.user.id
+    ).then((data) => {
+      return data;
+    });
 
+    results = Game.checkAiHit(gameState, stats);
+    gameState = results[0];
+    stats = results[1];
+    gameState.player_turn = true;
+    await GameStatsService.updateGameStats(req.app.get("db"), stats);
     await Game.postGameState(req.app.get("db"), gameState);
     res.json({
       gameState,
