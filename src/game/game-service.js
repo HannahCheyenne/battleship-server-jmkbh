@@ -26,7 +26,7 @@ const GameService = {
     });
   },
 
-  checkHit(gameState, x, y) {
+  checkHit(gameState, x, y, user_id) {
     if (gameState.player_turn) {
       const cell = gameState.p2_board[x][y];
       if (cell >= 0 && cell <= 4) {
@@ -37,9 +37,12 @@ const GameService = {
         );
         if (total_health <= 0) gameState.active_game = false; //TODO game over!
         gameState.p2_board[x][y] = 8;
-      } else {
+        gameState.player_turn = false;
+      } else if (cell === 7)
+      {
         //TODO miss!
         gameState.p2_board[x][y] = 9;
+        gameState.player_turn = false;
       }
     }
     return gameState;
@@ -63,7 +66,6 @@ const GameService = {
 
         timeout -= 1;
         if (timeout < 0) {
-          //! This should return an error, not valid, this is just for testing
           validMove = true;
         }
       }

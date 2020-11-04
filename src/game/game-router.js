@@ -19,14 +19,15 @@ gameRouter
       next(error);
     }
   })
-  .patch(jsonBodyParser, async (req, res, next) => {
+  .patch(requireAuth, jsonBodyParser, async (req, res, next) => {
     try {
       let gameState = await Game.getGameState(req.app.get("db"), req.params.id);
-
       const { x, y } = req.body;
-      //TODO validateMove(gameBoard, x,y)
-      gameState = Game.checkHit(gameState, x, y);
-      gameState.player_turn = false;
+      const user_id = req.app.user_id;
+      
+      console.log("user_id", req.params)
+      
+      gameState = Game.checkHit(gameState, x, y, req.app.get("db"), user_id);
       await Game.postGameState(req.app.get("db"), gameState);
       res.json({
         gameState,
