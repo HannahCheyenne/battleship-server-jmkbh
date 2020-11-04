@@ -106,7 +106,7 @@ const GameService = {
     for (let shipId = 4; shipId >= 0; shipId--) {
       board = this.placeShip(board, shipId);
     }
-    console.log("generateBoard -> board", board);
+    // console.log("generateBoard -> board", board);
     return board;
   },
 

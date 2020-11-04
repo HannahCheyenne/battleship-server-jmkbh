@@ -12,7 +12,17 @@ gameRouter
     try {
       let gameState = await Game.getGameState(req.app.get("db"), req.params.id);
       res.json({
+        //returns entire object
         gameState,
+
+        // deconstructs data
+        // id: gameState.id,
+        // p1_board: gameState.p1_board,
+        // p2_board: gameState.p2_board,
+        // p1_health: gameState.p1_health,
+        // p2_health: gameState.p2_health,
+        // player_turn: gameState.player_turn,
+        // active_game: gameState.active_game
       });
       next();
     } catch (error) {
@@ -96,7 +106,7 @@ gameRouter
 gameRouter.route("/genboard").get((req, res, next) => {
   try {
     const board = Game.generateBoard();
-    console.log("board", board);
+    // console.log("board", board);
     res.json({
       board,
     });

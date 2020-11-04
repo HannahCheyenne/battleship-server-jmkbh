@@ -58,6 +58,43 @@ function makeStatsArray(user) {
 }
 
 
+/**
+ * create a knex instance connected to postgres
+ * @returns {array} of game states
+ */
+function makeGameStateArray() {
+  return [
+    {
+      id: 1,
+      p1_board: [
+        [7,7,7,7,7,7,7,7],
+        [7,7,7,7,7,7,7,7],
+        [7,7,7,7,7,7,7,7],
+        [7,7,7,7,7,7,7,7],
+        [7,7,7,7,7,7,7,7],
+        [7,7,7,7,7,7,7,7],
+        [7,7,7,7,7,7,7,7],
+        [7,7,7,7,7,7,7,7],
+      ], 
+      p2_board: [
+        [7,7,7,7,7,7,7,7],
+        [7,7,7,7,7,7,7,7],
+        [7,7,7,7,7,7,7,7],
+        [7,7,7,7,7,7,7,7],
+        [7,7,7,7,7,7,7,7],
+        [7,7,7,7,7,7,7,7],
+        [7,7,7,7,7,7,7,7],
+        [7,7,7,7,7,7,7,7],
+      ],
+      p1_health: [2,3,3,4,5],
+      p2_health: [2,3,3,4,5],
+      player_turn: true,
+      active_game: true,
+    },
+  ]
+}
+
+
 
 
 /**
@@ -85,13 +122,16 @@ function cleanTables(db) {
   return db.transaction(trx =>
     trx.raw(
       `TRUNCATE 
+        "game_state",
         "game_stats",
         "user"`
     )
       .then(() =>
         Promise.all([
+          trx.raw(`ALTER SEQUENCE game_state_id_seq minvalue 0 START WITH 1`),
           trx.raw(`ALTER SEQUENCE game_stats_id_seq minvalue 0 START WITH 1`),
           trx.raw(`ALTER SEQUENCE user_id_seq minvalue 0 START WITH 1`),
+          trx.raw(`SELECT setval('game_state_id_seq', 0)`),
           trx.raw(`SELECT setval('game_stats_id_seq', 0)`),
           trx.raw(`SELECT setval('user_id_seq', 0)`),
         ])
@@ -145,13 +185,37 @@ async function seedUsersStats(db, users, stats) {
   })
 }
 
+/**
+ * insert game states into db and update sequence
+ * @param {knex instance} db
+ * @param {array} users - array of user objects for insertion
+ * @param {array} game_state - array of game state objects for insertion
+ * @returns {Promise} - when game_state table seeded
+ */
+async function seedUsersGameState(db, users, game_state) {
+  await seedUsers(db, users)
+
+  await db.transaction(async trx => {
+    await trx.into('game_state').insert(game_state)
+
+    await Promise.all([
+      trx.raw(
+        `SELECT setval('game_state_id_seq', ?)`,
+        [game_state[game_state.length - 1].id],
+      ),
+    ])
+  })
+}
+
 
 module.exports = {
   makeKnexInstance,
   makeUsersArray,
   makeStatsArray,
+  makeGameStateArray,
   cleanTables,
   seedUsers,
   seedUsersStats,
+  seedUsersGameState,
   makeAuthHeader
 }

@@ -1,7 +1,7 @@
 const app = require('../src/app')
 const helpers = require('./test-helpers')
 
-describe.only('Game Stats Endpoints', function () {
+describe('Game Stats Endpoints', function () {
   let db
 
   const testUsers = helpers.makeUsersArray()
@@ -20,7 +20,7 @@ describe.only('Game Stats Endpoints', function () {
   afterEach('cleanup', () => helpers.cleanTables(db))
 
   /**
-   * @description Endpoints for a language owned by a user
+   * @description Endpoints for stats owned by a user
    **/
   describe(`Endpoints protected by user`, () => {
     const gameStatsSpecificEndpoint = [
@@ -59,7 +59,7 @@ describe.only('Game Stats Endpoints', function () {
   })
 
   /**
-   * @description Get languages for a user
+   * @description Get stats for a user
    **/
   describe(`GET /api/stats`, () => {
     const [usersStats] = testStats.filter(
@@ -98,7 +98,7 @@ describe.only('Game Stats Endpoints', function () {
 
 
   /**
-   * @description Submit a new guess for the language
+   * @description Submit new stats to update in database for user
    **/
   describe(`POST /api/stats`, () => {
     beforeEach('insert users and stats', () => {
