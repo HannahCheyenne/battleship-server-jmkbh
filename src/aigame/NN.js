@@ -31,15 +31,15 @@ class NeuralNetwork {
     this.input = x;
     this.width = x._data.length;
     this.length = x._data[0].length;
-    this.weights1 = math.matrix(randomizeArray(this.length, this.width));
-    this.weights2 = math.matrix(randomizeArray(this.length, 1));
+    this.weights1 = math.matrix(randomizeArray(this.width, this.length));
+    this.weights2 = math.matrix(randomizeArray(1, this.width));
     this.y = y;
     this.output = math.matrix(zeroes(this.length, this.width));
   }
 
   feedforward() {
-    this.layer1 = sigmoid(math.dot(this.input, this.weights1));
-    this.output = sigmoid(math.dot(this.layer1, this.weights2));
+    this.layer1 = math.multiply(this.input, this.weights1);
+    this.output = math.multiply(this.layer1, this.weights2);
   }
 
   backprop() {
@@ -68,7 +68,11 @@ function main() {
     [3, 4],
     [6, 6],
   ]);
-  let output = [[1], [2], [3]];
+  let output = [
+    [1, 1],
+    [2, 2],
+    [3, 3],
+  ];
   let brain = new NeuralNetwork(input, output);
 
   console.log("");
@@ -81,8 +85,25 @@ function main() {
   console.log("y:", brain.input._data);
   console.log("output?", brain.output._data);
   console.log(
+    "END SUMMARY: ------------------------------------------------------------"
+  );
+
+  brain.feedforward();
+
+  console.log("");
+  console.log(
+    "SUMMARY after feed forward: ----------------------------------------------"
+  );
+  console.log("Input layer:", brain.input._data);
+  console.log("weights 1:", brain.weights1._data);
+  console.log("weights 2:", brain.weights2._data);
+  console.log("y:", brain.input._data);
+  console.log("output?", brain.output._data);
+  console.log("layer1: ", brain.layer1._data);
+  console.log(
     "END SUMMARY: -----------------------------------------------------------"
   );
+
   console.log("");
 }
 
