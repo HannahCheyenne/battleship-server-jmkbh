@@ -141,15 +141,28 @@ function scrubAnswerBoard(board) {
   return newBoard;
 }
 
-function randomizeMask(mask) {
-  for (let i = 0; i < mask.length; i++) {
-    for (let j = 0; j < mask[0].length; j++) {
-      if (Math.random() > 0.05) mask[i][j] = 1;
-      else mask[i][j] = 0;
+function randomizeMask(board) {
+  let mask = math.clone(board);
+  let validHit = false;
+  let validMiss = false;
+  while (validHit === false || validMiss === false) {
+    for (let i = 0; i < mask._data.length; i++) {
+      for (let j = 0; j < mask._data[0].length; j++) {
+        if (Math.random() > 0.95) {
+          mask._data[i][j] = 0;
+          if (board._data[i][j] === 1) {
+            validHit = true;
+          } else {
+            validMiss = true;
+          }
+        } else {
+          mask._data[i][j] = 1;
+        }
+      }
     }
   }
 
-  return mask;
+  return mask._data;
 }
 
 function getMove(nn, mask) {
@@ -169,7 +182,7 @@ function getMove(nn, mask) {
     }
   }
 
-  if (high > 0.85 && nn.y._data[IHigh][JHigh] === 1) {
+  if (nn.y._data[IHigh][JHigh] === 1) {
     return [true, high, IHigh, JHigh];
     //console.log("          HIT! :D      ");
   } else {
@@ -178,6 +191,30 @@ function getMove(nn, mask) {
   }
 
   //console.log("Predicted move: x:", IHigh, "y:", JHigh, "Value:", high);
+}
+
+function getRandoMove(nn, mask) {
+  let high = 0;
+  let IHigh = 0;
+  let JHigh = 0;
+
+  for (let i = 0; i < nn.output._data.length; i++) {
+    for (let j = 0; j < nn.output._data[0].length; j++) {
+      if (mask[i][j] === 0) {
+        high = nn.output._data[i][j];
+        IHigh = i;
+        JHigh = j;
+      }
+    }
+  }
+
+  if (nn.y._data[IHigh][JHigh] === 1) {
+    return [true, high, IHigh, JHigh];
+    //console.log("          HIT! :D      ");
+  } else {
+    return [false, high, IHigh, JHigh];
+    //console.log("                   Miss :(                ");
+  }
 }
 
 class NeuralNetwork {
@@ -256,44 +293,40 @@ function main() {
   let newBHits = 0;
   let zeroCon = 0;
   let newBCon = 0;
-  let lastCon = 0;
-  let lastHits = 0;
+  let randoCon = 0;
+  let randoHits = 0;
 
   for (let runs = 0; runs < 1001; runs++) {
     for (let epoch = 0; epoch < 1001; epoch++) {
+      brain = new NeuralNetwork(input, output);
       for (let loop = 0; loop < 1001; loop++) {
         board = math.matrix(game.generateBoard());
-        mask = randomizeMask(mask);
-        input = scrubVisibleBoard(board, mask);
         output = scrubAnswerBoard(board);
+        mask = randomizeMask(output);
+        input = scrubVisibleBoard(board, mask);
         brain.input = input;
         brain.y = output;
 
-        brain.train();
-
-        if (loop % 1000 === 0) {
-          // console.log(
-          //   "Iteration: ",
-          //   loop,
-          //   "---------------------------------------v"
-          // );
-          //display(brain);
-          data = getMove(brain, mask);
-
-          if (loop === 0) {
-            if (data[0]) {
-              zeroHits += 1;
-            }
-            zeroCon += data[1];
+        //if (loop % 2 === 0) {
+        if (loop === 1) {
+          randoData = getRandoMove(brain, mask);
+          if (randoData[0]) {
+            randoHits += 1;
           }
-
-          if (loop === 1000) {
-            if (data[0]) {
-              lastHits += 1;
-            }
-            lastCon += data[1];
-          }
+          randoCon += randoData[1];
         }
+
+        if (loop === 0) {
+          brain.train();
+          brain.feedforward();
+          data = getMove(brain, mask);
+          if (data[0]) {
+            zeroHits += 1;
+          }
+          zeroCon += data[1];
+        }
+        //}
+        brain.train();
       }
 
       console.log(
@@ -303,41 +336,47 @@ function main() {
         epoch,
         "Zero:",
         zeroHits,
-        (100 * (zeroHits / (runs * 1001 + epoch + 1))).toFixed(1),
+        (100 * (zeroHits / (runs * 1001 + epoch + 1))).toFixed(3),
         "%",
-        "last:",
-        lastHits,
-        (100 * (lastHits / (runs * 1001 + epoch + 1))).toFixed(1),
+        "Rando:",
+        randoHits,
+        (100 * (randoHits / (runs * 1001 + epoch + 1))).toFixed(3),
         "%",
         "NewB:",
         newBHits,
-        (100 * (newBHits / (runs * 1001 + epoch + 1))).toFixed(1),
+        (100 * (newBHits / (runs * 1001 + epoch + 1))).toFixed(3),
         "%",
         "zdiff",
-        newBHits - zeroHits,
-        "lDiff",
-        newBHits - lastHits,
+        (
+          100 * (newBHits / (runs * 1001 + epoch + 1)) -
+          100 * (zeroHits / (runs * 1001 + epoch + 1))
+        ).toFixed(3),
+        "rDiff",
+        (
+          100 * (newBHits / (runs * 1001 + epoch + 1)) -
+          100 * (randoHits / (runs * 1001 + epoch + 1))
+        ).toFixed(3),
         "zCon:",
-        (zeroCon / (runs * 1001 + epoch + 1)).toFixed(2),
-        "lCon:",
-        (lastCon / (runs * 1001 + epoch + 1)).toFixed(2),
+        (zeroCon / (runs * 1001 + epoch + 1)).toFixed(3),
+        "rCon:",
+        (randoCon / (runs * 1001 + epoch + 1)).toFixed(3),
         "nCon:",
-        (newBCon / (runs * 1001 + epoch + 1)).toFixed(2),
+        (newBCon / (runs * 1001 + epoch + 1)).toFixed(3),
         "iteration:",
-        (runs * 1001 + epoch + 1),
+        runs * 1001 + epoch + 1,
         "Age:",
         brain.age
       );
 
       //console.log("****************NEWBRAIN*****************");
       let newBoard = math.matrix(game.generateBoard());
-      let newMask = randomizeMask(mask);
-      let visibleBoard = scrubVisibleBoard(newBoard, newMask);
       let answerBoard = scrubAnswerBoard(newBoard);
+      let newMask = randomizeMask(answerBoard);
+      let visibleBoard = scrubVisibleBoard(newBoard, newMask);
       let newBrain = cloneValues(brain, visibleBoard, answerBoard);
-      newBrain.train();
-      data = getMove(newBrain, mask);
-      if (epoch % 100 === 0) {
+      newBrain.feedforward();
+      data = getMove(newBrain, newMask);
+      if (epoch % 100 === 0 && false) {
         display(newBrain);
         console.log(
           "Predicted move: x:",
@@ -355,6 +394,7 @@ function main() {
         newBHits += 1;
       }
       newBCon += data[1];
+      newBrain.backprop();
     }
   }
 }
