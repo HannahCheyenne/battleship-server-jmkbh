@@ -67,27 +67,10 @@ const GameService = {
     return [gameState, stats];
   },
 
-  checkAiHit(gameState, stats) {
+  checkAiHit(gameState, stats, x, y) {
     if (!gameState.player_turn) {
-      let validMove = false;
-      let x = 0;
-      let y = 0;
-      let cell;
-      let timeout = 100;
 
-      while (!validMove) {
-        y = Math.floor(Math.random() * 8);
-        x = Math.floor(Math.random() * 8);
-        cell = gameState.p1_board[x][y];
-        if (cell !== 9 && cell !== 8) {
-          validMove = true;
-        }
-
-        timeout -= 1;
-        if (timeout < 0) {
-          validMove = true;
-        }
-      }
+      let cell = gameState.p1_board[x][y]
 
       if (cell >= 0 && cell <= 4) {
         //hit!
@@ -154,7 +137,7 @@ const GameService = {
     let allClear = true;
     let dirX = 0;
     let dirY = 0;
-    const dir = [1, 2, 3, 4];
+    //const dir = [1, 2, 3, 4];
     let anchorX = 0;
     let anchorY = 0;
     let validAnchor = false;

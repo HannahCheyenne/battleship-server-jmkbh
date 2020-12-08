@@ -45,7 +45,7 @@ gameRouter
       gamestate = results[0];
       stats = results[1];
 
-      await GameStatsService.updateGameStats(req.app.get("db"), stats);
+      //await GameStatsService.updateGameStats(req.app.get("db"), stats);
 
       await Game.postGameState(req.app.get("db"), gameState);
       res.json({
@@ -126,29 +126,33 @@ gameRouter.route("/genboard").get((req, res, next) => {
   }
 });
 
-gameRouter.route("/aimove/:id").patch(requireAuth, async (req, res, next) => {
-  try {
-    let gameState = await Game.getGameState(req.app.get("db"), req.params.id);
-    let stats = await GameStatsService.getUsersStats(
-      req.app.get("db"),
-      req.user.id
-    ).then((data) => {
-      return data;
-    });
+gameRouter
+  .route("/aimove/:id")
+  .patch(requireAuth, jsonBodyParser, async (req, res, next) => {
+    try {
+      let gameState = await Game.getGameState(req.app.get("db"), req.params.id);
+      let stats = await GameStatsService.getUsersStats(
+        req.app.get("db"),
+        req.user.id
+      ).then((data) => {
+        return data;
+      });
 
-    results = Game.checkAiHit(gameState, stats);
-    gameState = results[0];
-    stats = results[1];
-    gameState.player_turn = true;
-    await GameStatsService.updateGameStats(req.app.get("db"), stats);
-    await Game.postGameState(req.app.get("db"), gameState);
-    res.json({
-      gameState,
-    });
-    next();
-  } catch (error) {
-    next(error);
-  }
-});
+      const { x, y } = req.body;
+
+      results = Game.checkAiHit(gameState, stats, x, y);
+      gameState = results[0];
+      stats = results[1];
+      gameState.player_turn = true;
+      //await GameStatsService.updateGameStats(req.app.get("db"), stats);
+      await Game.postGameState(req.app.get("db"), gameState);
+      res.json({
+        gameState,
+      });
+      next();
+    } catch (error) {
+      next(error);
+    }
+  });
 
 module.exports = gameRouter;
