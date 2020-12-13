@@ -43,7 +43,7 @@ gameRouter
       });
       results = Game.checkHit(gameState, x, y, stats);
       gamestate = results[0];
-      stats = results[1];
+      //stats = results[1];
 
       //await GameStatsService.updateGameStats(req.app.get("db"), stats);
 

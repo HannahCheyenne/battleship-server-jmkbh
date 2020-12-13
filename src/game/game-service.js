@@ -32,33 +32,33 @@ const GameService = {
     if (gameState.player_turn) {
       const cell = gameState.p2_board[x][y];
       if (cell >= 0 && cell <= 4) {
-        stats.shots_hit += 1;
+        //stats.shots_hit += 1;
         gameState.p2_health[cell] -= 1;
         if (gameState.p2_health[cell] <= 0) {
           if (cell === 0) {
-            stats.patrolboat_destroyed += 1;
+            //stats.patrolboat_destroyed += 1;
           } else if (cell === 1) {
-            stats.submarine_destroyed += 1;
+            //stats.submarine_destroyed += 1;
           } else if (cell === 2) {
-            stats.destroyer_destroyed += 1;
+            //stats.destroyer_destroyed += 1;
           } else if (cell === 3) {
-            stats.battleship_destroyed += 1;
+            //stats.battleship_destroyed += 1;
           } else if (cell === 4) {
-            stats.carrier_destroyed += 1;
+            //stats.carrier_destroyed += 1;
           }
         }
         const total_health = gameState.p2_health.reduce(
           (accumulator, currentValue) => accumulator + currentValue
         );
         if (total_health <= 0) {
-          stats.games_played += 1;
-          stats.game_wins += 1;
+          //stats.games_played += 1;
+          //stats.game_wins += 1;
           gameState.active_game = false;
         }
         gameState.p2_board[x][y] = 8;
         gameState.player_turn = false;
       } else if (cell === 7) {
-        stats.shots_missed += 1;
+        //stats.shots_missed += 1;
         gameState.p2_board[x][y] = 9;
         gameState.player_turn = false;
       } 
@@ -72,13 +72,14 @@ const GameService = {
 
       let cell = gameState.p1_board[x][y]
 
+
       if (cell >= 0 && cell <= 4) {
         //hit!
         gameState.p1_health[cell] -= 1;
         const total_health = gameState.p1_health.reduce((a, c) => a + c);
         if (total_health <= 0) {
-          stats.games_played += 1;
-          stats.game_losses += 1;
+          //stats.games_played += 1;
+          //stats.game_losses += 1;
           gameState.active_game = false;
         }
         gameState.p1_board[x][y] = 8;
@@ -137,7 +138,7 @@ const GameService = {
     let allClear = true;
     let dirX = 0;
     let dirY = 0;
-    //const dir = [1, 2, 3, 4];
+    const dir = [1, 2, 3, 4];
     let anchorX = 0;
     let anchorY = 0;
     let validAnchor = false;
